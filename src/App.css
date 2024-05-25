@@ -5,7 +5,10 @@
  background-position: center;
 }
 
-#fontFam{
+.fontFam{
   font-family: 'Open Sans';
 
+}
+#main2{
+  background-color: #f0f7fd;
 }
