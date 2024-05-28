@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import "./App.css";
 import ToDo from "./components/toDo";
 import ToDoList from "./components/ToDoList";
@@ -6,6 +7,7 @@ import ToDoList from "./components/ToDoList";
 const App = () => {
   const [ListToDo, setListToDo] = useState([]);
   const [Filter, setFilter] = useState("all");
+
   const addList = (toDoItem) => {
     if (toDoItem.task && toDoItem.description && toDoItem.date) {
       let newList = [...ListToDo];
@@ -15,10 +17,10 @@ const App = () => {
           newList.splice(i, 0, toDoItem);
           inserted = true;
           break;
-        } 
+        }
       }
       if (!inserted) {
-        newList.push(toDoItem); // If not inserted at any position, append at the end
+        newList.push(toDoItem); 
       }
       setListToDo(newList);
     }
@@ -42,49 +44,41 @@ const App = () => {
 
   const filteredList = ListToDo.filter((item) => {
     if (Filter === "all") {
-      return true; 
+      return true;
     } else {
-      return Filter === item.order ;
+      return Filter === item.order;
     }
   });
 
   return (
-    <>
-      <div className=" d-flex  justify-content-center align-items-center w-100  " >
-        <div className="my-5  d-flex flex-column justify-content-center align-items-center px-1 w-75 ">
-          <div className="w-50">
-            <h1 className="  text-center fontFam " >
-              TODO APP
-            </h1>
-          </div>
+    <Router>
+      <div className="d-flex justify-content-center align-items-center w-100 bg-success text-white">
+        <div className="my-2 mb-1 d-flex flex-column justify-content-center align-items-center px-1 w-100">
           
-          <div className=" w-75 border rounded-3 " id="main2">
-            <div>
-              <ToDo addOnList={addList} />
-            </div>
 
-            {filteredList.map((listItem, i) => (
-              <ToDoList
-                key={i}
-                index={i}
-                item={listItem}
-                deleteFromList={deleteItem}
-                editListItem={editItem} // Pass editItem function
+          <div className="w-100 " >
+            <Routes>
+              <Route
+                path="/"
+                element={<ToDo addOnList={addList} />}
               />
-            ))}
+              <Route
+                path="/list"
+                element={
+                  <ToDoList
+                    ListToDo={filteredList}
+                    deleteFromList={deleteItem}
+                    editListItem={editItem}
+                    handleFilterChange={handleFilterChange}
+                    Filter={Filter}
+                  />
+                }
+              />
+            </Routes>
           </div>
-        </div>
-        <div className="w-25 fixed-top m-5">
-          <h6>FILTER BY PRIORITY</h6>
-          <select value={Filter} onChange={handleFilterChange}>
-            <option value="all">All</option>
-            <option value="high">High</option>
-            <option value="moderate">Moderate</option>
-            <option value="low">Low</option>
-          </select>
         </div>
       </div>
-    </>
+    </Router>
   );
 };
 
