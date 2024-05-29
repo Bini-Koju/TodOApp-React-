@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import "./App.css";
 import ToDo from "./components/toDo";
 import ToDoList from "./components/ToDoList";
 
+const getLocalItems = () => {
+  let list = localStorage.getItem("lists");
+  console.log(list);
+
+  if (list) {
+    return JSON.parse(list);
+  } 
+  return [];
+};
+
 const App = () => {
-  const [ListToDo, setListToDo] = useState([]);
+  const [ListToDo, setListToDo] = useState(getLocalItems());
   const [Filter, setFilter] = useState("all");
 
   const addList = (toDoItem) => {
@@ -20,7 +30,7 @@ const App = () => {
         }
       }
       if (!inserted) {
-        newList.push(toDoItem); 
+        newList.push(toDoItem);
       }
       setListToDo(newList);
     }
@@ -50,35 +60,36 @@ const App = () => {
     }
   });
 
-  return (
-    <Router>
-      <div className="d-flex justify-content-center align-items-center w-100 bg-success text-white">
-        <div className="my-2 mb-1 d-flex flex-column justify-content-center align-items-center px-1 w-100">
-          
+  useEffect(() => {
+    localStorage.setItem("lists", JSON.stringify(ListToDo));
+  }, [ListToDo]);
 
-          <div className="w-100 " >
-            <Routes>
-              <Route
-                path="/"
-                element={<ToDo addOnList={addList} />}
-              />
-              <Route
-                path="/list"
-                element={
-                  <ToDoList
-                    ListToDo={filteredList}
-                    deleteFromList={deleteItem}
-                    editListItem={editItem}
-                    handleFilterChange={handleFilterChange}
-                    Filter={Filter}
-                  />
-                }
-              />
-            </Routes>
+  return (
+    <>
+      <Router>
+        <div className="d-flex justify-content-center align-items-center container-fluid     ">
+          <div className="my-2 mb-1 d-flex flex-column justify-content-center align-items-center px-1 w-100">
+            <div className="w-100 ">
+              <Routes>
+                <Route path="/" element={<ToDo addOnList={addList} />} />
+                <Route
+                  path="/list"
+                  element={
+                    <ToDoList
+                      ListToDo={filteredList}
+                      deleteFromList={deleteItem}
+                      editListItem={editItem}
+                      handleFilterChange={handleFilterChange}
+                      Filter={Filter}
+                    />
+                  }
+                />
+              </Routes>
+            </div>
           </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </>
   );
 };
 
