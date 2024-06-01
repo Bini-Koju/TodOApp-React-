@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input } from "reactstrap";
 import { Link } from "react-router-dom";
+import ImgCarousel from "./Carousel";
 
 
 const ToDo = (props) => {
   const [toDo, setToDo] = useState("");
   const [describe, setDescribe] = useState("");
   const [toDoDate, setToDoDate] = useState("");
-  const [priority, setPriority] = useState("moderate");
+  const [priority, setPriority] = useState("MODERATE");
+  const [status, setStatus] = useState("PENDING");
   
 
   return (
     <>
     <div className="d-flex justify-content-center align-items-center py-2  mx-2 px-5   " style={{ minHeight: "630px" }} >
     <div className="w-50 " >
-        <img className="" src="https://t3.ftcdn.net/jpg/05/13/59/72/360_F_513597277_YYqrogAmgRR9ohwTUnOM784zS9eYUcSk.jpg" alt="" style={{height:"560px", width:"600px"}}/>
+        {/* <img className="" src="https://t3.ftcdn.net/jpg/05/13/59/72/360_F_513597277_YYqrogAmgRR9ohwTUnOM784zS9eYUcSk.jpg" alt="" style={{height:"560px", width:"600px"}}/> */}
+      <ImgCarousel style={{height:"560px", width:"600px"}} />
       </div>
     <div className="w-50   shadow-lg  bg-white rounded">
       <div className="text-center py-1">
@@ -63,12 +66,31 @@ const ToDo = (props) => {
                     setPriority(e.target.value);
                   }}
                 >
-                  <option value="high">High</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="low">Low</option>
+                  <option value="HIGH">HIGH</option>
+                  <option value="MODERATE">MODERATE</option>
+                  <option value="LOW">LOW</option>
+                </select>
+              </div>
+
+              <div className="w-50 d-flex flex-column">
+                <label className="fw-bold">
+                  <h5>Task Status:</h5>
+                </label>
+                <select
+                  style={{ borderColor: "#ced4da",height:"38px" }}
+                  value={status}
+                  onChange={(e) => {
+                    setStatus(e.target.value);
+                  }}
+                >
+                  <option value="PENDING">PENDING</option>
+                  <option value="IN-PROGRESS">IN-PROGRESS</option>
+                  <option value="COMPLETED" >COMPLETED</option>
                 </select>
               </div>
             </div>
+
+
 
             <div>
               <label className="fw-bold">
@@ -88,19 +110,21 @@ const ToDo = (props) => {
           </div>
           <div className="d-flex gap-5 mx-auto">
             <Button
-              className="px-4" style={{ borderColor: "#ced4da" }}
+              className=" bg-primary" style={{ borderColor: "#ced4da" }}
               onClick={() => {
                 if (toDo && describe && toDoDate) {
-                  props.addOnList({
+                  props.addList({
                     task: toDo,
                     description: describe,
                     date: toDoDate,
                     order: priority,
+                    stage:status,
                   });
                   setToDo("");
                   setDescribe("");
                   setToDoDate("");
-                  setPriority("moderate");
+                  setPriority("MODERATE");
+                  setStatus("PENDING");
                   alert("Task is added");
                 }
               }}
@@ -108,7 +132,7 @@ const ToDo = (props) => {
               ADD TASK
             </Button>
             <Link to="/list">
-              <Button className="px-4" style={{ borderColor: "#ced4da" }}>CHECK LIST</Button>
+              <Button style={{ borderColor: "#ced4da" }}>CHECK LIST</Button>
             </Link>
           </div>
         </div>

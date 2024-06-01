@@ -1,196 +1,199 @@
-import React, { useState } from "react";
-import {
-  Card,
-  CardBody,
-  CardSubtitle,
-  CardTitle,
-  CardText,
-  Button,
-  Input,
-  Row,
-  Col,
-} from "reactstrap";
+import React, { useState, useEffect } from "react";
+import { Button, Row, Col, Table } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import Example from "./Edit";
 
-const ToDoList = ({
-  ListToDo,
-  deleteFromList,
-  editListItem,
-  handleFilterChange,
-  Filter,
-}) => {
+const ToDoList = ({ ListToDo, setListToDo }) => {
   const [editIndex, setEditIndex] = useState(null);
   const [editedTask, setEditedTask] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
   const [editedDate, setEditedDate] = useState("");
   const [editedPriority, setEditedPriority] = useState("");
+  const [editedStatus, setEditedStatus] = useState("");
+  const [filterPriority, setFilterPriority] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [modal, setModal] = useState(false);
+  const [animationDone, setAnimationDone] = useState(false);
 
-  const startEditing = (item, index) => {
-    setEditIndex(index);
+  const toggleModal = () => setModal(!modal);
+
+  const deleteItem = (key) => {
+    let newList = [...ListToDo];
+    newList.splice(key, 1);
+    setListToDo([...newList]);
+  };
+
+  const editItem = (key, updatedItem) => {
+    let newList = [...ListToDo];
+    newList[key] = updatedItem;
+    setListToDo(newList);
+  };
+
+  const startEditing = (item, filteredIndex) => {
+    const originalIndex = ListToDo.findIndex(
+      (task) =>
+        task.task === item.task &&
+        task.description === item.description &&
+        task.date === item.date
+    );
+    setEditIndex(originalIndex);
     setEditedTask(item.task);
     setEditedDescription(item.description);
     setEditedDate(item.date);
     setEditedPriority(item.order);
+    setEditedStatus(item.stage);
+    toggleModal();
   };
 
-  const saveChanges = (index) => {
-    editListItem(index, {
+  const saveChanges = () => {
+    editItem(editIndex, {
       task: editedTask,
       description: editedDescription,
       date: editedDate,
       order: editedPriority,
+      stage: editedStatus,
     });
     setEditIndex(null);
+    toggleModal();
+  };
+
+  const handleFilterPriorityChange = (e) => {
+    setFilterPriority(e.target.value);
+  };
+
+  const handleFilterStatusChange = (e) => {
+    setFilterStatus(e.target.value);
   };
 
   const filteredList = ListToDo.filter((item) => {
-    if (Filter === "all") {
-      return true;
-    } else {
-      return Filter === item.order;
-    }
+    const priorityMatches =
+      filterPriority === "all" || filterPriority === item.order;
+    const statusMatches = filterStatus === "all" || filterStatus === item.stage;
+    return priorityMatches && statusMatches;
   });
 
-  return (
-    <>
-      <div className="d-flex gap-5 mx-2 px-5" style={{ minHeight: "630px" }}>
-        <div className="w-100 px-5 shadow-lg bg-white rounded">
-          <div className="py-4 mx-auto d-flex justify-content-center align-items-center">
-            <h1 className="text-center fontFam">TODO LIST</h1>
-          </div>
-          <div className="w-100">
-            <h6>FILTER BY PRIORITY</h6>
-            <select
-              className="text-muted"
-              style={{ borderColor: "#ced4da" }}
-              value={Filter}
-              onChange={handleFilterChange}
-            >
-              <option value="all">All</option>
-              <option value="high">High</option>
-              <option value="moderate">Moderate</option>
-              <option value="low">Low</option>
-            </select>
+  useEffect(() => {
+    setAnimationDone(true);
+  }, []);
 
-            <Row className="my-4">
-              {filteredList.length > 0 ? (
-                filteredList.map((item, index) => (
-                  <Col md="4" key={index} className="mb-4">
-                    <Card
-                      style={{ backgroundColor: "#F5E1FF", height: "230px" }}
-                      className="shadow"
-                    >
-                      <CardBody>
-                        {editIndex === index ? (
-                          <>
-                            <CardTitle tag="h5">
-                              <label>Task:</label>
-                              <Input
-                                type="text"
-                                value={editedTask}
-                                onChange={(e) => setEditedTask(e.target.value)}
-                              />
-                            </CardTitle>
-                            <CardSubtitle className="mb-2 text-muted" tag="h6">
-                              <Input
-                                type="text"
-                                value={editedDescription}
-                                onChange={(e) =>
-                                  setEditedDescription(e.target.value)
-                                }
-                              />
-                            </CardSubtitle>
-                            <div className="d-flex gap-4">
-                              <CardText>
-                                <Input
-                                  type="date"
-                                  value={editedDate}
-                                  onChange={(e) =>
-                                    setEditedDate(e.target.value)
-                                  }
-                                />
-                              </CardText>
-                              <CardText>
-                                <select
-                                  style={{
-                                    height: "36px",
-                                    width: "130px",
-                                    borderColor: "#ced4da",
-                                  }}
-                                  value={editedPriority}
-                                  onChange={(e) =>
-                                    setEditedPriority(e.target.value)
-                                  }
-                                >
-                                  <option value="high">High</option>
-                                  <option value="moderate">Moderate</option>
-                                  <option value="low">Low</option>
-                                </select>
-                              </CardText>
-                            </div>
-                            <Button
-                              onClick={() => saveChanges(index)}
-                              color="primary"
-                            >
-                              <FontAwesomeIcon icon={faSave} />
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="mb-4">
-                              <CardTitle className="mb-2" tag="h4">
-                                Task: {item.task}
-                              </CardTitle>
-                              <CardSubtitle
-                                className="mb-2 text-muted"
-                                tag="h5"
-                              >
-                                {item.description}
-                              </CardSubtitle>
-                              <CardText tag="h6">
-                                Deadline: {item.date}
-                              </CardText>
-                              <CardText tag="h6">
-                                Priority: {item.order}
-                              </CardText>
-                            </div>
-                            <div className="d-flex justify-content-center gap-3">
-                              <Button
-                                onClick={() => startEditing(item, index)}
-                                color="primary"
-                                size="md"
-                              >
-                                <FontAwesomeIcon icon={faEdit} />
-                              </Button>
-                              <Button
-                                onClick={() => deleteFromList(index)}
-                                color="danger"
-                                size="md"
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </Button>
-                            </div>
-                          </>
-                        )}
-                      </CardBody>
-                    </Card>
-                  </Col>
-                ))
-              ) : (
-                <div className="w-100 text-center my-5 py-5">
-                  <h1 className="text-muted">No tasks in the list</h1>
-                  <Link to="/">
-                    <Button>Add </Button>
-                  </Link>
-                </div>
-              )}
-            </Row>
-          </div>
+  return (
+    <div className="d-flex mx-2 px-5" style={{ minHeight: "630px" }}>
+      <div className="w-100 px-5 shadow-lg bg-white rounded">
+        <div className="py-4 mx-auto d-flex justify-content-center align-items-center">
+          <h1 className="text-center fontFam">TODO LIST</h1>
         </div>
+        <div className="w-100">
+          <Row>
+            <Col md={12} className="d-flex justify-content-end mb-4">
+              <Link to="/">
+                <Button color="primary" className="px-4">
+                  Add Task
+                </Button>
+              </Link>
+            </Col>
+          </Row>
+          <div className="d-flex justify-content-end  gap-3  mb-5">
+            <div>
+              <h6>FILTER BY PRIORITY</h6>
+              <select
+                className="text-muted"
+                style={{ borderColor: "#ced4da", width: "150px" }}
+                value={filterPriority}
+                onChange={handleFilterPriorityChange}
+              >
+                <option value="all">All</option>
+                <option value="HIGH">HIGH</option>
+                <option value="MODERATE">MODERATE</option>
+                <option value="LOW">LOW</option>
+              </select>
+            </div>
+
+            <div>
+              <h6>FILTER BY STATUS</h6>
+              <select
+                className="text-muted"
+                style={{ borderColor: "#ced4da", width: "150px" }}
+                value={filterStatus}
+                onChange={handleFilterStatusChange}
+              >
+                <option value="all">All</option>
+                <option value="PENDING">PENDING</option>
+                <option value="IN-PROGRESS">IN-PROGRESS</option>
+                <option value="COMPLETED">COMPLETED</option>
+              </select>
+            </div>
+          </div>
+          <Row className="my-4">
+            {filteredList.length > 0 ? (
+              <Table
+                striped
+                className={`w-100 ${animationDone ? "table-animate" : ""}`}
+              >
+                <thead>
+                  <tr>
+                    <th className="fw-normal fs-5">Task</th>
+                    <th className="fw-normal fs-5">Description</th>
+                    <th className="fw-normal fs-5">Priority</th>
+                    <th className="fw-normal fs-5">Status</th>
+                    <th className="fw-normal fs-5">Deadline</th>
+                    <th className="fw-normal fs-5">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredList.map((item, index) => (
+                    <tr key={index} className="table-hover">
+                      <td className="text-capitalize ">{item.task}</td>
+                      <td className="text-capitalize ">{item.description}</td>
+                      <td className="text-capitalize " >{item.order}</td>
+                      <td className="text-success text-capitalize">{item.stage}</td>
+                      <td className="text-danger ">{item.date}</td>
+                      <td className="icon-container ">
+                        <FontAwesomeIcon
+                          onClick={() => startEditing(item, index)}
+                          style={{ color: "blue", cursor: "pointer" }}
+                          icon={faEdit}
+                          className="mx-2"
+                        />
+                        <FontAwesomeIcon
+                          onClick={() => deleteItem(index)}
+                          style={{ color: "red", cursor: "pointer" }}
+                          icon={faTrash}
+                          className="mx-2"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
+              <div className="w-100 text-center my-5 py-5">
+                <h1 className="text-muted text-danger">No tasks in the list</h1>
+                
+              </div>
+            )}
+          </Row>
+        </div>
+        {editIndex !== null && (
+          <Example
+            modal={modal}
+            toggle={toggleModal}
+            editedTask={editedTask}
+            setEditedDate={setEditedDate}
+            setEditedDescription={setEditedDescription}
+            setEditedPriority={setEditedPriority}
+            setEditedStatus={setEditedStatus}
+            setEditedTask={setEditedTask}
+            editedDate={editedDate}
+            editedDescription={editedDescription}
+            editedPriority={editedPriority}
+            editedStatus={editedStatus}
+            saveChanges={saveChanges}
+          />
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

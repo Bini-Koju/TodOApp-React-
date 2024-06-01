@@ -12,3 +12,41 @@
 #main2{
   background-color: #f0f7fd;
 }
+
+.table-animate tbody tr {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+#main{
+  background-image: url("https://img.freepik.com/premium-photo/list-icon-notebook-with-completed-todo-list-3d-render_471402-428.jpg");
+  background-repeat: no-repeat;
+ background-size: cover;
+ background-position: center;
+}
+
+.fontFam{
+  font-family: 'Open Sans';
+
+}
+#main2{
+  background-color: #f0f7fd;
+}
+
+.table-animate tbody tr {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

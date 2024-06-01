@@ -10,13 +10,12 @@ const getLocalItems = () => {
 
   if (list) {
     return JSON.parse(list);
-  } 
+  }
   return [];
 };
 
 const App = () => {
   const [ListToDo, setListToDo] = useState(getLocalItems());
-  const [Filter, setFilter] = useState("all");
 
   const addList = (toDoItem) => {
     if (toDoItem.task && toDoItem.description && toDoItem.date) {
@@ -36,52 +35,32 @@ const App = () => {
     }
   };
 
-  const deleteItem = (key) => {
-    let newList = [...ListToDo];
-    newList.splice(key, 1);
-    setListToDo([...newList]);
-  };
-
-  const editItem = (key, updatedItem) => {
-    let newList = [...ListToDo];
-    newList[key] = updatedItem;
-    setListToDo(newList);
-  };
-
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
-
-  const filteredList = ListToDo.filter((item) => {
-    if (Filter === "all") {
-      return true;
-    } else {
-      return Filter === item.order;
-    }
-  });
-
   useEffect(() => {
     localStorage.setItem("lists", JSON.stringify(ListToDo));
   }, [ListToDo]);
 
   return (
     <>
+      
       <Router>
         <div className="d-flex justify-content-center align-items-center container-fluid     ">
           <div className="my-2 mb-1 d-flex flex-column justify-content-center align-items-center px-1 w-100">
             <div className="w-100 ">
               <Routes>
-                <Route path="/" element={<ToDo addOnList={addList} />} />
+                <Route
+                  path="/"
+                  element={
+                    <ToDo
+                      ListToDo={ListToDo}
+                      setListToDo={setListToDo}
+                      addList={addList}
+                    />
+                  }
+                />
                 <Route
                   path="/list"
                   element={
-                    <ToDoList
-                      ListToDo={filteredList}
-                      deleteFromList={deleteItem}
-                      editListItem={editItem}
-                      handleFilterChange={handleFilterChange}
-                      Filter={Filter}
-                    />
+                    <ToDoList ListToDo={ListToDo} setListToDo={setListToDo} />
                   }
                 />
               </Routes>
