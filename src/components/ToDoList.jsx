@@ -146,8 +146,10 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
                     <tr key={index} className="table-hover">
                       <td className="text-capitalize ">{item.task}</td>
                       <td className="text-capitalize ">{item.description}</td>
-                      <td className="text-capitalize " >{item.order}</td>
-                      <td className="text-success text-capitalize">{item.stage}</td>
+                      <td className="text-capitalize ">{item.order}</td>
+                      <td className="text-success text-capitalize">
+                        {item.stage}
+                      </td>
                       <td className="text-danger ">{item.date}</td>
                       <td className="icon-container ">
                         <FontAwesomeIcon
@@ -168,9 +170,15 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
                 </tbody>
               </Table>
             ) : (
-              <div className="w-100 text-center my-5 py-5">
-                <h1 className="text-muted text-danger">No tasks in the list</h1>
-                
+              <div className="w-100 text-center my-2 py-5">
+                <h1 className="text-muted text-danger mb-2">
+                  No tasks in the list
+                </h1>
+                <img
+                  src="https://media.tenor.com/bm8Q6yAlsPsAAAAj/verified.gif"
+                  alt="noImage"
+                  style={{ height: "150px" }}
+                />
               </div>
             )}
           </Row>
