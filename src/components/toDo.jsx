@@ -10,7 +10,6 @@ const ToDo = (props) => {
   const [priority, setPriority] = useState("MODERATE");
   const [status, setStatus] = useState("PENDING");
 
-  // Function to get today's date in the format YYYY-MM-DD
   const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -22,11 +21,11 @@ const ToDo = (props) => {
 
   return (
     <>
-      <div className="d-flex justify-content-center align-items-center py-2 mx-2 px-5" style={{ minHeight: "630px" }}>
-        <div className="w-50">
-          <ImgCarousel style={{ height: "560px", width: "600px" }} />
+      <div className="d-flex flex-column flex-md-row  justify-content-center align-items-center py-2 mx-2 px-5" style={{ minHeight: "630px" }}>
+        <div className=" w-100">
+          <ImgCarousel className="w-100" style={{ height: "560px" }} />
         </div>
-        <div className="w-50 shadow-lg bg-white rounded">
+        <div className="w-md-50 w-xs-100  w-100  shadow-lg bg-white rounded">
           <div className="text-center py-1">
             <h1 className="text-center fontFam">TODO APP</h1>
           </div>
@@ -46,8 +45,8 @@ const ToDo = (props) => {
                   />
                 </div>
 
-                <div className="d-flex gap-4 mb-0">
-                  <div className="w-50">
+                <div className="d-flex flex-md-row flex-column gap-4 mb-0">
+                  <div className="w-md-50 w-100">
                     <label className="fw-bold">
                       <h5>Task Deadline:</h5>
                     </label>
@@ -61,7 +60,7 @@ const ToDo = (props) => {
                     />
                   </div>
 
-                  <div className="w-50 d-flex flex-column">
+                  <div className="w-md-50 w-100 d-flex flex-column">
                     <label className="fw-bold">
                       <h5>Task Priority:</h5>
                     </label>
@@ -78,7 +77,7 @@ const ToDo = (props) => {
                     </select>
                   </div>
 
-                  <div className="w-50 d-flex flex-column">
+                  <div className="w-md-50 w-100 d-flex flex-column">
                     <label className="fw-bold">
                       <h5>Task Status:</h5>
                     </label>

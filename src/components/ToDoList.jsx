@@ -94,7 +94,7 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
               </Link>
             </Col>
           </Row>
-          <div className="d-flex justify-content-end  gap-3  mb-5">
+          <div className="d-flex flex-sm-row flex-column justify-content-end  gap-3  mb-5">
             <div>
               <h6>FILTER BY PRIORITY</h6>
               <select
@@ -128,6 +128,7 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
           <Row className="my-4">
             {filteredList.length > 0 ? (
               <Table
+              responsive
                 striped
                 className={`w-100 ${animationDone ? "table-animate" : ""}`}
               >
