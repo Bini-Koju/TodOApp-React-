@@ -1,29 +1,67 @@
 import React, { useState, useEffect } from "react";
-import { Button, Row, Col, Table } from "reactstrap";
+import { Button, Row, Col, Table, Badge } from "reactstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faEdit,
+  faEye,
+  faPlus,
+  faHome,
+} from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import Example from "./Edit";
+import ViewModal from "./View";
+import ProjectView from "./ProjectView";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
-const ToDoList = ({ ListToDo, setListToDo }) => {
+const initialValues = {
+  editedTask: "",
+  editedDescription: "",
+  editedDate: "",
+  editedPriority: "",
+  editedStatus: "",
+  editedProject: "",
+};
+
+const validationSchema = Yup.object().shape({
+  editedTask: Yup.string().required("Required field"),
+  editedDescription: Yup.string().required("Required field"),
+  editedDate: Yup.date().required("Required field"),
+  editedPriority: Yup.string().required("Required field"),
+  editedStatus: Yup.string().required("Required field"),
+  editedProject: Yup.string().required("Required field"),
+});
+
+const ToDoList = ({ ListToDo, setListToDo, ListProject }) => {
   const [editIndex, setEditIndex] = useState(null);
-  const [editedTask, setEditedTask] = useState("");
-  const [editedDescription, setEditedDescription] = useState("");
-  const [editedDate, setEditedDate] = useState("");
-  const [editedPriority, setEditedPriority] = useState("");
-  const [editedStatus, setEditedStatus] = useState("");
+  const [modal, setModal] = useState(false);
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [modal, setModal] = useState(false);
+  const [filterProject, setFilterProject] = useState("all");
   const [animationDone, setAnimationDone] = useState(false);
 
-  const toggleModal = () => setModal(!modal);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [itemToView, setItemToView] = useState(null);
+
+  const [projectViewModalOpen, setProjectViewModalOpen] = useState(false);
+  const [projectToView, setProjectToView] = useState(null);
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values) => {
+      saveChanges(values);
+    },
+  });
 
   const deleteItem = (key) => {
     let newList = [...ListToDo];
     newList.splice(key, 1);
     setListToDo([...newList]);
   };
+
+  const toggleModal = () => setModal(!modal);
 
   const editItem = (key, updatedItem) => {
     let newList = [...ListToDo];
@@ -39,21 +77,25 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
         task.date === item.date
     );
     setEditIndex(originalIndex);
-    setEditedTask(item.task);
-    setEditedDescription(item.description);
-    setEditedDate(item.date);
-    setEditedPriority(item.order);
-    setEditedStatus(item.stage);
+    formik.setValues({
+      editedTask: item.task,
+      editedDescription: item.description,
+      editedDate: item.date,
+      editedPriority: item.order,
+      editedStatus: item.stage,
+      editedProject: item.projectNum,
+    });
     toggleModal();
   };
 
-  const saveChanges = () => {
+  const saveChanges = (values) => {
     editItem(editIndex, {
-      task: editedTask,
-      description: editedDescription,
-      date: editedDate,
-      order: editedPriority,
-      stage: editedStatus,
+      task: values.editedTask,
+      description: values.editedDescription,
+      date: values.editedDate,
+      order: values.editedPriority,
+      stage: values.editedStatus,
+      projectNum: values.editedProject,
     });
     setEditIndex(null);
     toggleModal();
@@ -66,93 +108,207 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
   const handleFilterStatusChange = (e) => {
     setFilterStatus(e.target.value);
   };
+  const handleFilterProjectChange = (e) => {
+    setFilterProject(e.target.value);
+  };
 
   const filteredList = ListToDo.filter((item) => {
     const priorityMatches =
       filterPriority === "all" || filterPriority === item.order;
     const statusMatches = filterStatus === "all" || filterStatus === item.stage;
-    return priorityMatches && statusMatches;
+    const projectMatches =
+      filterProject === "all" || filterProject === item.projectNum;
+    return priorityMatches && statusMatches && projectMatches;
   });
 
   useEffect(() => {
     setAnimationDone(true);
   }, []);
 
+  const startViewing = (item, filteredIndex) => {
+    setItemToView(item);
+  };
+
+  const toggleViewModal = () => {
+    setViewModalOpen(!viewModalOpen);
+  };
+
+  const toggleProjectViewModal = () => {
+    setProjectViewModalOpen(!projectViewModalOpen);
+  };
+
+  const startViewingProject = (projectNum) => {
+    const project = ListProject.find((proj) => proj.projectTask === projectNum);
+    if (project) {
+      setProjectToView(project);
+      toggleProjectViewModal();
+    }
+  };
+
+  const getColor = (status) => {
+    if (status === "PENDING") return "primary";
+    if (status === "COMPLETED") return "success";
+    return "danger";
+  };
+
   return (
-    <div className="d-flex mx-2 px-5" style={{ minHeight: "630px" }}>
-      <div className="w-100 px-5 shadow-lg bg-white rounded">
+    <div
+      className="d-flex mx-0 mx-md-2 px-1 px-lg-5 px-md-3"
+      style={{ minHeight: "630px" }}
+    >
+      <div className="w-100 px-2 px-md-5 shadow-lg bg-white rounded">
         <div className="py-4 mx-auto d-flex justify-content-center align-items-center">
           <h1 className="text-center fontFam">TODO LIST</h1>
         </div>
         <div className="w-100">
-          <Row>
-            <Col md={12} className="d-flex justify-content-end mb-4">
-              <Link to="/">
-                <Button color="primary" className="px-4">
-                  Add Task
-                </Button>
-              </Link>
-            </Col>
-          </Row>
-          <div className="d-flex flex-sm-row flex-column justify-content-end  gap-3  mb-5">
-            <div>
-              <h6>FILTER BY PRIORITY</h6>
-              <select
-                className="text-muted"
-                style={{ borderColor: "#ced4da", width: "150px" }}
-                value={filterPriority}
-                onChange={handleFilterPriorityChange}
-              >
-                <option value="all">All</option>
-                <option value="HIGH">HIGH</option>
-                <option value="MODERATE">MODERATE</option>
-                <option value="LOW">LOW</option>
-              </select>
-            </div>
+          <div className="d-flex  flex-md-row flex-column justify-content-between ">
+            <div className="d-flex flex-sm-row flex-column justify-content-end align-items-center gap-3 mb-5">
+              <div>
+                <h6>FILTER BY PRIORITY</h6>
+                <select
+                  className="text-muted"
+                  style={{ borderColor: "#ced4da", width: "150px" }}
+                  value={filterPriority}
+                  onChange={handleFilterPriorityChange}
+                >
+                  <option value="all">All</option>
+                  <option value="HIGH">HIGH</option>
+                  <option value="MODERATE">MODERATE</option>
+                  <option value="LOW">LOW</option>
+                </select>
+              </div>
 
-            <div>
-              <h6>FILTER BY STATUS</h6>
-              <select
-                className="text-muted"
-                style={{ borderColor: "#ced4da", width: "150px" }}
-                value={filterStatus}
-                onChange={handleFilterStatusChange}
-              >
-                <option value="all">All</option>
-                <option value="PENDING">PENDING</option>
-                <option value="IN-PROGRESS">IN-PROGRESS</option>
-                <option value="COMPLETED">COMPLETED</option>
-              </select>
+              <div>
+                <h6>FILTER BY STATUS</h6>
+                <select
+                  className="text-muted"
+                  style={{ borderColor: "#ced4da", width: "150px" }}
+                  value={filterStatus}
+                  onChange={handleFilterStatusChange}
+                >
+                  <option value="all">All</option>
+                  <option value="PENDING">PENDING</option>
+                  <option value="IN-PROGRESS">IN-PROGRESS</option>
+                  <option value="COMPLETED">COMPLETED</option>
+                </select>
+              </div>
+
+              <div>
+                <h6>FILTER BY PROJECT</h6>
+                <select
+                  className="text-muted"
+                  style={{ borderColor: "#ced4da", width: "150px" }}
+                  value={filterProject}
+                  onChange={handleFilterProjectChange}
+                >
+                  <option value="all">All</option>
+                  {ListProject.map((project, index) => (
+                    <option key={index} value={project.projectTask}>
+                      {project.projectTask}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
+            <Row>
+              <Col md={12} className="mt-3 d-flex gap-3">
+                <Link to="/add">
+                  <Button color="primary" className="px-3 py-1">
+                    Add Task
+                    <FontAwesomeIcon
+                      className="text-white mx-1"
+                      icon={faPlus}
+                    />
+                  </Button>
+                </Link>
+
+                <Link to="/">
+                  <Button className="px-3 py-1 ">
+                    Home
+                    <FontAwesomeIcon
+                      className="text-white mx-1 "
+                      icon={faHome}
+                      />
+                  </Button>
+                </Link>
+              </Col>
+            </Row>
           </div>
-          <Row className="my-4">
+          <Row className="my-3 mx-1">
             {filteredList.length > 0 ? (
               <Table
-              responsive
+                responsive
                 striped
                 className={`w-100 ${animationDone ? "table-animate" : ""}`}
               >
                 <thead>
                   <tr>
-                    <th className="fw-normal fs-5">Task</th>
-                    <th className="fw-normal fs-5">Description</th>
-                    <th className="fw-normal fs-5">Priority</th>
-                    <th className="fw-normal fs-5">Status</th>
-                    <th className="fw-normal fs-5">Deadline</th>
-                    <th className="fw-normal fs-5">Actions</th>
+                    <th className="fw-normal fs-3">
+                      <h5>S.N</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>Task</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>Description</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>Priority</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>Status</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>PROJECT</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>Deadline</h5>
+                    </th>
+                    <th className="fw-normal fs-3">
+                      <h5>Actions</h5>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredList.map((item, index) => (
                     <tr key={index} className="table-hover">
-                      <td className="text-capitalize ">{item.task}</td>
-                      <td className="text-capitalize ">{item.description}</td>
-                      <td className="text-capitalize ">{item.order}</td>
-                      <td className="text-success text-capitalize">
-                        {item.stage}
+                      <td>{index + 1}</td>
+                      <td className="text-capitalize">
+                        <h6>{item.task}</h6>
                       </td>
-                      <td className="text-danger ">{item.date}</td>
+                      <td className="text-capitalize ">
+                        {" "}
+                        {item.description.length > 10
+                          ? `${item.description.slice(0, 10)}...`
+                          : item.description}
+                      </td>
+                      <td className="text-capitalize">{item.order}</td>
+
+                      <td className=" text-capitalize">
+                        {/* <Badge color="primary">{item.stage}</Badge> */}
+
+                        <Badge color={getColor(item.stage)}>{item.stage}</Badge>
+                      </td>
+
+                      <td
+                        className=" text-capitalize"
+                        onClick={() => startViewingProject(item.projectNum)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {item.projectNum}
+                      </td>
+
+                      <td>{item.date}</td>
                       <td className="icon-container ">
+                        <FontAwesomeIcon
+                          onClick={() => {
+                            startViewing(item, index);
+                            toggleViewModal();
+                          }}
+                          style={{ color: "green", cursor: "pointer" }}
+                          icon={faEye}
+                          className="mx-2"
+                        />
                         <FontAwesomeIcon
                           onClick={() => startEditing(item, index)}
                           style={{ color: "blue", cursor: "pointer" }}
@@ -176,29 +332,31 @@ const ToDoList = ({ ListToDo, setListToDo }) => {
                   No tasks in the list
                 </h1>
                 <img
+                  className="w-100%"
                   src="https://media.tenor.com/bm8Q6yAlsPsAAAAj/verified.gif"
                   alt="noImage"
-                  style={{ height: "150px" }}
                 />
               </div>
             )}
           </Row>
         </div>
         {editIndex !== null && (
-          <Example
-            modal={modal}
-            toggle={toggleModal}
-            editedTask={editedTask}
-            setEditedDate={setEditedDate}
-            setEditedDescription={setEditedDescription}
-            setEditedPriority={setEditedPriority}
-            setEditedStatus={setEditedStatus}
-            setEditedTask={setEditedTask}
-            editedDate={editedDate}
-            editedDescription={editedDescription}
-            editedPriority={editedPriority}
-            editedStatus={editedStatus}
-            saveChanges={saveChanges}
+          <Example modal={modal} toggle={toggleModal} formik={formik} ListProject={ListProject}  />
+        )}
+
+        {viewModalOpen && (
+          <ViewModal
+            modal={viewModalOpen}
+            toggle={toggleViewModal}
+            item={itemToView}
+          />
+        )}
+
+        {projectViewModalOpen && (
+          <ProjectView
+            modal={projectViewModalOpen}
+            toggle={toggleProjectViewModal}
+            item={projectToView}
           />
         )}
       </div>

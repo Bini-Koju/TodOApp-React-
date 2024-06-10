@@ -1,12 +1,16 @@
-#main{
-  background-image: url("https://img.freepik.com/premium-photo/list-icon-notebook-with-completed-todo-list-3d-render_471402-428.jpg");
+
+.bg-blur {
+  background-image: url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm00Mi0zNjAtYWUtc29jaWFsbWVkaWEtMDEuanBn.jpg");
   background-repeat: no-repeat;
- background-size: cover;
- background-position: center;
+  background-size: cover;
+  /* background-position: right; */
+  filter: blur(1px);
+  z-index: -1;
 }
 
+
 .fontFam{
-  font-family: 'Open Sans';
+  font-family: ' Times New Roman, Times, serif';
 
 }
 #main2{
@@ -15,7 +19,7 @@
 
 .table-animate tbody tr {
   opacity: 0;
-  animation: fadeIn 1s forwards;
+  animation: fadeIn 2s forwards;
 }
 
 
@@ -24,29 +28,26 @@
     opacity: 1;
   }
 }
-#main{
-  background-image: url("https://img.freepik.com/premium-photo/list-icon-notebook-with-completed-todo-list-3d-render_471402-428.jpg");
-  background-repeat: no-repeat;
- background-size: cover;
- background-position: center;
+
+/* Add this to your styles.css or within a <style> tag */
+@keyframes typewriter {
+  to {
+    opacity: 1;
+  }
 }
 
-.fontFam{
-  font-family: 'Open Sans';
-
-}
-#main2{
-  background-color: #f0f7fd;
-}
-
-.table-animate tbody tr {
+.typewriter p {
   opacity: 0;
-  animation: fadeIn 1s forwards;
+  animation: fadeIn 4s forwards;
+}
+
+/* Navbar.css */
+.nav-link {
+  transition: filter 0.3s ease; 
+}
+
+.nav-link:hover {
+  filter: blur(1px); 
 }
 
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
-}

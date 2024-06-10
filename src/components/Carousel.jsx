@@ -4,7 +4,7 @@ import {
   CarouselItem,
   CarouselControl,
   CarouselIndicators,
-  CarouselCaption,
+ 
 } from 'reactstrap';
 
 const items = [
@@ -13,7 +13,7 @@ const items = [
     key: 1,
   },
   {
-    src: 'https://blog.cdn.level.game/2023/11/positive-quotes-for-journaling.webp',
+    src: 'https://img.freepik.com/premium-vector/keep-going-keep-growing-positive-inspirational-quote-about-learning-progress-self-support_511660-434.jpg',
     key: 2,
   },
   {
@@ -58,11 +58,8 @@ function ImgCarousel(args) {
         onExited={() => setAnimating(false)}
         key={item.key}
       >
-        <img src={item.src} alt={item.altText} style={{ width: '100%', height: '560px', objectFit: 'cover' }} />
-        <CarouselCaption
-          captionText={item.caption}
-          captionHeader={item.caption}
-        />
+        <img src={item.src} alt={item.altText} style={{ width: '100%', objectFit: 'cover' }} />
+        
       </CarouselItem>
     );
   });
