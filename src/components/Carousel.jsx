@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Carousel,
   CarouselItem,
   CarouselControl,
   CarouselIndicators,
- 
-} from 'reactstrap';
+} from "reactstrap";
 
 const items = [
   {
-    src: ' https://cdn-klbfn.nitrocdn.com/hxUHRtZqyBIPBoCsJuqPruVoZiyLyaHV/assets/images/optimized/rev-5e89cd7/contenthacker.com/wp-content/uploads/2019/03/quote38-1024x1024.jpg',
+    src: "./img1.jpg",
     key: 1,
   },
   {
-    src: 'https://img.freepik.com/premium-vector/keep-going-keep-growing-positive-inspirational-quote-about-learning-progress-self-support_511660-434.jpg',
+    src: "./img2.avif",
     key: 2,
   },
   {
-    src: 'https://img.freepik.com/free-vector/inspirational-quote-watercolour-background_1048-18831.jpg?size=338&ext=jpg&ga=GA1.1.2082370165.1717027200&semt=ais_user',
+    src: "img3.avif",
     key: 3,
   },
 ];
@@ -29,9 +28,9 @@ function ImgCarousel(args) {
   useEffect(() => {
     const cycleCarousel = setInterval(() => {
       next();
-    }, 3000); 
+    }, 3000);
 
-    return () => clearInterval(cycleCarousel); 
+    return () => clearInterval(cycleCarousel);
   }, [activeIndex]);
 
   const next = () => {
@@ -58,8 +57,11 @@ function ImgCarousel(args) {
         onExited={() => setAnimating(false)}
         key={item.key}
       >
-        <img src={item.src} alt={item.altText} style={{ width: '100%', objectFit: 'cover' }} />
-        
+        <img
+          src={item.src}
+          alt={item.altText}
+          style={{ width: "100%", objectFit: "cover" }}
+        />
       </CarouselItem>
     );
   });

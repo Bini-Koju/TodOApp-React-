@@ -59,8 +59,11 @@ const ToDo = (props) => {
         <ImgCarousel />
       </div>
       <div className="w-md-50 w-xs-100 w-100 shadow-lg bg-light rounded">
-        <div className="text-center py-1">
-          <h1 className="text-center  fontFam fw-lighter">TODO APP</h1>
+        <div className="text-center d-flex justify-content-between px-3 py-1">
+          <h1 className="text-center  fontFam fw-lighter">TASK</h1>
+          <Link to="/">
+            <Button className="bg-light text-black border-0 fw-bold">X</Button>
+          </Link>
         </div>
         <Form className="w-100 px-3 py-2" onSubmit={Formik.handleSubmit}>
           <div className="d-flex flex-column justify-content-start align-items-start gap-4">

@@ -38,14 +38,19 @@ const Project = (props) => {
         className="d-flex  flex-column flex-lg-row justify-content-center align-items-center py-2 mx-1 mx-lg-2 px-1 px-lg-5"
         style={{ minHeight: "630px" }}
       >
-        
         <div className="w-md-50 w-xs-100 w-100 py-3 shadow-lg bg-white rounded">
           <div>
-          <div className="text-center py-1">
-            <h1 className="text-center  fontFam fw-lighter">PROJECT</h1>
-          </div>
-          <Form className="w-100 px-3 py-2" onSubmit={Formik.handleSubmit}>
-            {/* <div className="d-flex flex-column justify-content-start align-items-start gap-4"> */}
+            <div className="text-center d-flex justify-content-between px-3 py-1">
+              <h1 className="text-center  fontFam fw-lighter">PROJECT</h1>
+              <Link to="/">
+                <Button className="bg-white text-black border-0 fw-bold">
+                  X
+                </Button>
+              </Link>
+            </div>
+
+            <Form className="w-100 px-3 py-2" onSubmit={Formik.handleSubmit}>
+              {/* <div className="d-flex flex-column justify-content-start align-items-start gap-4"> */}
               <div className="d-flex flex-column w-100  gap-3">
                 <FormGroup className="mb-0 mb-xl-2">
                   <label className="fw-bold">
@@ -123,8 +128,8 @@ const Project = (props) => {
                   </Button>
                 </Link>
               </div>
-            {/* </div> */}
-          </Form>
+              {/* </div> */}
+            </Form>
           </div>
           <div>
             <img src="" alt="" />

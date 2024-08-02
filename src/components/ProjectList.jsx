@@ -237,7 +237,7 @@ const ProjectList = ({ ListProject, setListProject }) => {
             ) : (
               <div className="w-100 text-center my-2 py-5">
                 <h1 className="text-muted text-danger mb-2">
-                  No tasks in the list
+                  No projects in the list
                 </h1>
                 <img
                   className="w-100%"
