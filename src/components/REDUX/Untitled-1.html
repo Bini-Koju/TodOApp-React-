@@ -1,0 +1,26 @@
+      <Row>
+        {items &&
+          items.map((item) => (
+            <Col key={item.id}>
+              <Card>
+                <CardHeader>
+                  <img src="{item.pic}"></img>
+                </CardHeader>
+                <CardBody>{item.name}</CardBody>
+                <CardFooter>
+                  <Button onClick={AddToCart(item)}>Add To Cart</Button>
+                </CardFooter>
+              </Card>
+            </Col>
+          ))}
+      </Row>
+
+      const AddToCart = (item) => {
+        const newItem = {
+          id: item.id,
+          name: item.name,
+          price: item.price,
+        };
+        dispatch(addItem(newItem));
+      };
+    

@@ -7,6 +7,11 @@ import Home from "./components/Home";
 
 import Project from "./components/Project";
 import ProjectList from "./components/ProjectList";
+import StackOverflow from "./components/Stack";
+import App2 from "./components/CONTEXTAPI/App2";
+import App3 from "./components/REDUX/App3";
+
+
 
 const getLocalItems = () => {
   let list = localStorage.getItem("lists");
@@ -78,6 +83,9 @@ const App = () => {
             <div className="w-100 ">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/stack" element={<StackOverflow />} />
+                <Route path="/app2" element={<App2 />} />
+                <Route path="/app3" element={<App3/>} />
                 <Route
                   path="/project"
                   element={
@@ -91,10 +99,12 @@ const App = () => {
                 <Route
                   path="/listProject"
                   element={
-                    <ProjectList ListProject={ListProject} setListProject={setListProject} />
+                    <ProjectList
+                      ListProject={ListProject}
+                      setListProject={setListProject}
+                    />
                   }
                 />
-                
 
                 <Route
                   path="/add"
@@ -110,8 +120,11 @@ const App = () => {
                 <Route
                   path="/list"
                   element={
-                    <ToDoList ListToDo={ListToDo} setListToDo={setListToDo} 
-                    ListProject={ListProject}/>
+                    <ToDoList
+                      ListToDo={ListToDo}
+                      setListToDo={setListToDo}
+                      ListProject={ListProject}
+                    />
                   }
                 />
               </Routes>
